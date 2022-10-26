@@ -10,7 +10,22 @@
       "ProjectGuid": "3a69a0ef-c0a6-4a72-9de8-d75a95519d79",
       "DisplayName": "Hazel",
       "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    },
+    "f4c124e3-60a1-a37e-69b9-2e55d5170ae0": {
+      "ProjectGuid": "f4c124e3-60a1-a37e-69b9-2e55d5170ae0",
+      "DisplayName": "Sandbox",
+      "ColorIndex": 2
+    },
+    "99294d0d-053e-75be-cebf-181e3a9371ef": {
+      "ProjectGuid": "99294d0d-053e-75be-cebf-181e3a9371ef",
+      "DisplayName": "Hazel",
+      "ColorIndex": 3
     }
   },
-  "NextColorIndex": 2
+  "NextColorIndex": 4
 }

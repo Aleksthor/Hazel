@@ -56,6 +56,7 @@ namespace Hazel
 		// Glad stuff
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		HZ_CORE_ASSERT(status, "Failed to initialize Glad!");
+
 		// Basic window stuff
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
@@ -110,6 +111,14 @@ namespace Hazel
 			}
 		});
 
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int character)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			KeyTypedEvent event(character);
+			data.EventCallback(event);
+		});
+
+
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -161,7 +170,6 @@ namespace Hazel
 	{
 		glfwPollEvents();
 		glfwSwapBuffers(m_Window);
-
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -1,10 +1,19 @@
 #pragma once
 
+#include <memory>
+// Defines
+
 #ifdef HZ_PLATFORM_WINDOWS
-	#ifdef HZ_BUILD_DLL
-		#define HAZEL_API _declspec(dllexport)
+	#ifdef HZ_DYNAMIC_LINK
+		#ifdef HZ_BUILD_DLL
+			#define HAZEL_API __declspec(dllexport)
+			#define IMGUI_API __declspec(dllexport)
+		#else
+			#define HAZEL_API _declspec(dllimport)
+			#define IMGUI_API __declspec(dllimport)
+		#endif
 	#else
-		#define HAZEL_API _declspec(dllimport)
+		#define HAZEL_API
 	#endif
 #else
 	#error Hazel only supports Windows!
@@ -22,3 +31,13 @@
 #define BIT(x) (1 << x)
 
 #define BIND_EVENT_FN(x) (std::bind(&x, this, std::placeholders::_1))
+
+namespace Hazel
+{
+	template<typename T>
+	using Scope = std::unique_ptr<T>;
+
+	template<typename T>
+	using Ref = std::shared_ptr<T>;
+
+}

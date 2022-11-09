@@ -7,6 +7,7 @@ namespace Hazel
 	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
 
+	// Initialize our logger
 	void Log::Init()
 	{
 		spdlog::set_pattern("%^[%T] %n: %v%$");

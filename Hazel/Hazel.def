@@ -1,0 +1,6 @@
+LIBRARY Hazel
+EXPORTS
+	?ShowDemoWindow@ImGui@@YAXPEA_N@Z
+	?Begin@ImGui@YA_NPEBdPEA_NH@Z
+	?End@ImGui@@YAXXZ
+	?ColorEdit4@ImGui@@YA_NPEBDQEAMH@Z

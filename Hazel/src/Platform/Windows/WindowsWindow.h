@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Hazel/Window.h"
-
+#include "Hazel/Renderer/GraphicsContext.h"
 #include <GLFW/glfw3.h>
 
 namespace Hazel
@@ -20,10 +20,15 @@ namespace Hazel
 		inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 		void SetVSync(bool enabled) override;
 		bool IsVSync() const override;
+
+
+		inline virtual void* GetNativeWindow() const { return m_Window; }
 	private:
 		virtual void Init(const WindowProps& props);
 		virtual void Shutdown();
 	private:
+
+		GraphicsContext* m_Context;
 		GLFWwindow* m_Window;
 
 		struct WindowData

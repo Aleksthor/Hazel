@@ -4,8 +4,11 @@
 
 
 
+
 extern Hazel::Application* Hazel::CreateApplication();
 
+
+// main function of the project
 int main(int argc, char** argv)
 {
 	Hazel::Log::Init();

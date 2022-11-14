@@ -12,7 +12,7 @@ public:
 		: Layer("Example"), m_Camera(-3.2, 3.2, -1.8, 1.8), m_CameraPosition(0.f,0.f,0.f), m_TrianglePosition (-2.f,0.f,0.f)
 	{
 		// Setup an Open GL Triangle
-		#pragma region Triangle
+		#pragma region Triangle Vertex/Index/Layout
 
 		// Create Vertex Array
 		m_TriangleVertexArray.reset(Hazel::VertexArray::Create());
@@ -55,7 +55,7 @@ public:
 		#pragma endregion
 
 		// Setup and Open GL Square
-		#pragma region Square
+		#pragma region Square Vertex/Index/Layout
 
 		// Create a Square Vertex Array
 		m_SquareVertexArray.reset(Hazel::VertexArray::Create());
@@ -97,138 +97,20 @@ public:
 
 		#pragma endregion
 
+
 		// Shaders
-		#pragma region Triangle Shader
 
-		// Shader
-
-		// source code
-		// Triangle Shader
-		std::string vertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec4 a_Color;
-
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-
-			out vec3 v_Position;
-			out vec4 v_Color;
-
-			void main()
-			{
-				v_Position = a_Position;
-				v_Color = a_Color;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-
-		)";
-
-		std::string fragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			uniform vec3 u_Color;
-
-			in vec3 v_Position;
-			in vec4 v_Color;
-
-			void main()
-			{
-				color = vec4 (u_Color, 1.0f);
-			}
-
-		)";
-		m_TriangleShader.reset(Hazel::Shader::Create(vertexSrc, fragmentSrc));
+		m_ShaderLibrary.Load("assets/shaders/examples/ExampleTriangle.glsl");
+		m_ShaderLibrary.Load("assets/shaders/examples/ExampleSquare.glsl");
 
 
-		#pragma endregion
+		auto TextureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 
-		#pragma region Square Shader
-		// Square Shader
+		m_Texture = Hazel::Texture2D::Create("assets/textures/Nidaros.png");
 
-		std::string squareVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(TextureShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(TextureShader)->UploadUniformInt("u_Texture", 0);
 
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-
-			out vec3 v_Position;
-
-			void main()
-			{
-				v_Position = a_Position;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-
-		)";
-
-		std::string squareFragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			uniform vec3 u_Color;
-
-			in vec3 v_Position;
-
-			void main()
-			{
-				color = vec4(u_Color, 1.f);
-			}
-
-		)";
-
-		m_SquareShader.reset(Hazel::Shader::Create(squareVertexSrc, squareFragmentSrc));
-
-		#pragma endregion
-
-		#pragma region Texture Shader
-
-		// Texture Shader
-
-		std::string textureVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
-
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-
-			out vec2 v_TexCoord;
-
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position, 1.0);
-			}
-
-		)";
-
-		std::string textureFragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			in vec2 v_TexCoord;
-
-			uniform vec3 u_Color;
-			
-			void main()
-			{
-				color = vec4(v_TexCoord, 0.f, 1.f);
-			}
-
-		)";
-
-		m_TextureShader.reset(Hazel::Shader::Create(textureVertexSrc, textureFragmentSrc));
-
-		#pragma endregion
 	}
 
 	void OnUpdate(Hazel::Timestep dT) override
@@ -306,14 +188,16 @@ public:
 		glm::vec4 blueColor(0.2f, 0.3f, 0.8f, 1.0f);
 		glm::vec4 redColor(0.3f, 0.8f, 0.3f, 1.f);
 
+		
+		auto squareShader = m_ShaderLibrary.Get("ExampleSquare");
 
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(squareShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(squareShader)->UploadUniformFloat3("u_Color", m_SquareColor);
 
+		auto triangleShader = m_ShaderLibrary.Get("ExampleTriangle");
 
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_SquareShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_SquareShader)->UploadUniformFloat3("u_Color", m_SquareColor);
-
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TriangleShader)->Bind();
-		std::dynamic_pointer_cast<Hazel::OpenGLShader>(m_TriangleShader)->UploadUniformFloat3("u_Color", m_TriangleColor);
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(triangleShader)->Bind();
+		std::dynamic_pointer_cast<Hazel::OpenGLShader>(triangleShader)->UploadUniformFloat3("u_Color", m_TriangleColor);
 		
 		for (int i{}; i < 10; i++)
 		{
@@ -321,18 +205,22 @@ public:
 			{
 				glm::vec3 pos(i * 0.22f - 1.f, j * 0.22f - 1.f , 0.f);
 				glm::mat4 squareTransform = glm::translate(glm::mat4(1.f), pos) * scale;
-				Hazel::Renderer::Submit(m_SquareVertexArray, m_SquareShader, squareTransform);
+				Hazel::Renderer::Submit(m_SquareVertexArray, squareShader, squareTransform);
 
 			}
 		}
 
+		m_Texture->Bind();
+		
+		auto textureShader = m_ShaderLibrary.Get("Texture");
+
 		scale = glm::scale(glm::mat4(1.f), glm::vec3(0.8f));
 		glm::vec3 pos(2.2f, -0.7f, 0.f);
 		glm::mat4 textureTransform = glm::translate(glm::mat4(1.f), pos) * 0.8f;
-		Hazel::Renderer::Submit(m_SquareVertexArray, m_TextureShader, textureTransform);
+		Hazel::Renderer::Submit(m_SquareVertexArray, textureShader, textureTransform);
 
 		glm::mat4 triangleTransform = glm::translate(glm::mat4(1.f), m_TrianglePosition);
-		Hazel::Renderer::Submit(m_TriangleVertexArray, m_TriangleShader, triangleTransform);
+		Hazel::Renderer::Submit(m_TriangleVertexArray, triangleShader, triangleTransform);
 
 		Hazel::Renderer::EndScene();
 	}
@@ -361,11 +249,14 @@ public:
 	}
 
 private:
-	Hazel::Ref<Hazel::Shader> m_TriangleShader;
-	Hazel::Ref<Hazel::VertexArray> m_TriangleVertexArray;
+	Hazel::ShaderLibrary m_ShaderLibrary;
 
-	Hazel::Ref<Hazel::Shader> m_SquareShader, m_TextureShader;
+	Hazel::Ref<Hazel::VertexArray> m_TriangleVertexArray;
 	Hazel::Ref<Hazel::VertexArray> m_SquareVertexArray;
+
+	Hazel::Ref<Hazel::Texture2D> m_Texture;
+
+
 
 	Hazel::OrthographicCamera m_Camera;
 

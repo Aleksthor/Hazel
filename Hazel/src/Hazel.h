@@ -18,9 +18,11 @@
 #include "Hazel/Renderer/RenderCommands.h"
 
 #include "Hazel/Renderer/Buffer.h"
+#include "Hazel/Renderer/VertexArray.h"
 #include "Hazel/Renderer/Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
-#include "Hazel/Renderer/VertexArray.h"
+#include "Hazel/Renderer/Texture.h"
+#include "Platform/OpenGL/OpenGLTexture.h"
 
 #include "Hazel/Renderer/OrthographicCamera.h"
 

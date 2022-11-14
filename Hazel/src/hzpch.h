@@ -8,6 +8,7 @@
 
 #include "Hazel/Log.h"
 
+#include <array>
 #include <sstream>
 
 #include <string>
